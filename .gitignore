@@ -38,3 +38,33 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Dependencies
+.bun/
+node_modules/
+
+# Prisma generated files
+/prisma/migrations/
+/prisma/dev.db
+/prisma/.env
+/prisma/.generated/
+
+# Build artifacts
+/build/
+/dist/
+/out/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Log files
+*.log
+logs/
+
+# System files
+.DS_Store
+Thumbs.db
+
