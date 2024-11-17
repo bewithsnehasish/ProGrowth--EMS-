@@ -1,70 +1,52 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Node modules
+node_modules/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+# Next.js build output
+.next/
+out/
 
-# testing
-/coverage
+# Log files
+*.log
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
+# Dependency directories
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env files (can opt-in for commiting if needed)
-.env*
+# Prisma
+prisma/migrations/
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-
-# Dependencies
-.bun/
-node_modules/
-
-# Prisma generated files
-/prisma/migrations/
-/prisma/dev.db
-/prisma/.env
-/prisma/.generated/
-
-# Build artifacts
-/build/
-/dist/
-/out/
-
-# Environment files
+# Environment files (sensitive credentials)
 .env
 .env.local
 .env.*.local
 
-# Log files
-*.log
-logs/
-
-# System files
+# OS-specific files
 .DS_Store
 Thumbs.db
+
+# VSCode settings
+.vscode/
+
+# Next.js static export folder
+*.next/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional: if you want to ignore coverage reports
+coverage/
+
+# Optional: if you have Docker setup
+docker-compose.override.yml
+.docker/
+
+# Ignore PostgreSQL dumps if you happen to use them
+*.sql
+
+# Ignore IDE and editor files
+.idea/
+
+/bun.lockb
+
 

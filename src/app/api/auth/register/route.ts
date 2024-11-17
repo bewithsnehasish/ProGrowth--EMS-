@@ -1,59 +1,74 @@
-// pages/api/auth/register.ts
-import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
+// Initialize Prisma client
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method === "POST") {
-    const { firstName, lastName, email, password, phone, role } = req.body;
+// Handle POST request for user registration
+export async function POST(req: NextRequest) {
+  try {
+    // Parse request body
+    const { firstName, lastName, email, password, phone, role } =
+      await req.json();
 
-    try {
-      // Validate input
-      if (!firstName || !lastName || !email || !password || !phone || !role) {
-        return res.status(400).json({ message: "All fields are required" });
-      }
-
-      // Check if email already exists
-      const existingUser = await prisma.user.findUnique({ where: { email } });
-      if (existingUser) {
-        return res.status(400).json({ message: "Email already exists" });
-      }
-
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      function generateEmployeeId() {
-        return `EMP${Date.now().toString().slice(-6)}`;
-      }
-
-      // Create user in the database
-      await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          role,
-          profile: {
-            create: {
-              firstName,
-              lastName,
-              phone,
-              employeeId: generateEmployeeId(),
-            },
-          },
-        },
-      });
-
-      return res.status(201).json({ message: "User registered successfully." });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Server error" });
+    // Validate required fields
+    if (!firstName || !lastName || !email || !password || !phone || !role) {
+      return NextResponse.json(
+        { message: "All fields are required" },
+        { status: 400 },
+      );
     }
-  } else {
-    return res.status(405).json({ message: "Method not allowed" });
+
+    // Check if email already exists
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "Email already exists" },
+        { status: 400 },
+      );
+    }
+
+    // Hash password before saving to DB
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Generate custom employee ID based on timestamp
+    const generateEmployeeId = () => `EMP${Date.now().toString().slice(-6)}`;
+
+    // Create new user in database
+    const user = await prisma.user.create({
+      data: {
+        id: generateEmployeeId(),
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        phone,
+        role,
+      },
+    });
+
+    // Respond with success and user details (excluding password)
+    return NextResponse.json(
+      {
+        message: "User registered successfully.",
+        user: {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          role: user.role,
+        },
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    // Catch any unexpected errors and send a server error response
+    return NextResponse.json(
+      { message: "Server error", error },
+      { status: 500 },
+    );
   }
 }

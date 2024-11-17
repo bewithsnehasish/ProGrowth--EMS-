@@ -1,11 +1,10 @@
 // pages/api/auth/logout.ts
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
-    // Clear the JWT token (or instruct client to do so)
-    return res.status(200).json({ message: "Logged out successfully" });
-  } else {
-    return res.status(405).json({ message: "Method not allowed" });
-  }
+// The POST function must accept the request (NextRequest) parameter
+export function POST(req: NextRequest) {
+  return NextResponse.json(
+    { message: "Logged out successfully" },
+    { status: 200 },
+  );
 }
