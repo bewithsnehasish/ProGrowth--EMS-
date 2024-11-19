@@ -1,12 +1,18 @@
+// src/app/api/profile/[userId]/route.ts
+
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  // Add this context parameter to get the userId from the URL path
+  { params }: { params: { userId: string } },
+) {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    // Use params.userId instead of searchParams
+    const userId = params.userId;
 
     if (!userId) {
       return NextResponse.json(
@@ -36,13 +42,17 @@ export async function GET(req: NextRequest) {
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { userId: string } },
+) {
   try {
-    const { userId, ...updateFields } = await req.json();
+    const userId = params.userId;
+    const updateFields = await req.json();
 
     if (!userId || Object.keys(updateFields).length === 0) {
       return NextResponse.json(
-        { message: "User ID and at least one field to update are required" },
+        { message: "At least one field to update is required" },
         { status: 400 },
       );
     }
